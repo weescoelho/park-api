@@ -27,7 +27,6 @@ public class User implements Serializable {
   @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
 
-
   @Column(nullable = false, unique = true, length = 100)
   private String username;
 
@@ -36,8 +35,7 @@ public class User implements Serializable {
 
   @Column(nullable = false, length = 25)
   @Enumerated(EnumType.STRING)
-  private Role role;
-
+  private Role role = Role.CUSTOMER;
 
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
@@ -51,8 +49,10 @@ public class User implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
     User user = (User) o;
     return Objects.equals(id, user.id);
   }
@@ -65,7 +65,7 @@ public class User implements Serializable {
   @Override
   public String toString() {
     return "User{" +
-            "id='" + id + '\'' +
-            '}';
+        "id='" + id + '\'' +
+        '}';
   }
 }
