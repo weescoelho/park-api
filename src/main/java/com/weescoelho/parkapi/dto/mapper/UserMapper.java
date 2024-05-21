@@ -1,7 +1,8 @@
 package com.weescoelho.parkapi.dto.mapper;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeMap;
 
 import com.weescoelho.parkapi.dto.UserCreateDTO;
@@ -23,6 +24,10 @@ public class UserMapper {
     propertyMapper.addMappings(
         mapper -> mapper.map(src -> role, UserResponseDTO::setRole));
     return mapperMain.map(user, UserResponseDTO.class);
+  }
+
+  public static List<UserResponseDTO> toListDTO(List<User> users) {
+    return users.stream().map(user -> toDTO(user)).toList();
   }
 }
 
