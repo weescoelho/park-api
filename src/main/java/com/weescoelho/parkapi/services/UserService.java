@@ -1,6 +1,7 @@
 package com.weescoelho.parkapi.services;
 
 import com.weescoelho.parkapi.entities.User;
+import com.weescoelho.parkapi.entities.User.Role;
 import com.weescoelho.parkapi.repositories.UserRepository;
 import com.weescoelho.parkapi.services.exceptions.PasswordInvalidException;
 
@@ -11,18 +12,24 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
 
-  private final UserRepository userRepository;
+  @Autowired
+  private UserRepository userRepository;
+
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
   public User save(User data) {
     try {
+      data.setPassword(passwordEncoder.encode(data.getPassword()));
       return userRepository.save(data);
     } catch (DataIntegrityViolationException e) {
       throw new UsernameUniqueViolationException(String.format("Username {%s} already exists!", data.getUsername()));
@@ -43,15 +50,25 @@ public class UserService {
 
     User user = findById(id);
 
-    if (!user.getPassword().equals(password)) {
+    if (!passwordEncoder.matches(password, user.getPassword())) {
       throw new PasswordInvalidException("Invalid password!");
     }
 
-    user.setPassword(newPassword);
+    user.setPassword(passwordEncoder.encode(newPassword));
     return user;
   }
 
   public List<User> findAll() {
     return userRepository.findAll();
+  }
+
+  @Transactional(readOnly = true)
+  public User findByUsername(String username) {
+    return userRepository.findByUsername(username)
+        .orElseThrow(() -> new ObjectNotFoundException(String.format("User with username '%s' not found", username)));
+  }
+
+  public Role findRoleByUsername(String username) {
+    return userRepository.findRoleByUsername(username);
   }
 }
