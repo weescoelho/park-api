@@ -15,13 +15,12 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
+  @Autowired
   private JwtUserDetailService userDetailService;
 
   @Override
@@ -51,7 +50,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     UserDetails userDetails = userDetailService.loadUserByUsername(username);
 
     UsernamePasswordAuthenticationToken authToken = UsernamePasswordAuthenticationToken
-        .authenticated((User) userDetails, null, userDetails.getAuthorities());
+        .authenticated(userDetails, null, userDetails.getAuthorities());
 
     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
     SecurityContextHolder.getContext().setAuthentication(authToken);
