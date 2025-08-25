@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserCreateDTO {
 
-  @Email(message = "E-mail is not valid!")
+  @Email(message = "E-mail is not valid!", regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")
   @NotBlank
   private String username;
 

@@ -68,9 +68,10 @@ public class UserController {
   }
 
   @Operation(summary = "Update password", responses = {
-      @ApiResponse(responseCode = "204", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
-      @ApiResponse(responseCode = "400", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
-      @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+      @ApiResponse(responseCode = "204", description = "Senha atualizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
+      @ApiResponse(responseCode = "400", description = "Senha não confere", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+      @ApiResponse(responseCode = "404", description = "Recurso não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+      @ApiResponse(responseCode = "422", description = "Campos inválidos ou mal formatados", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
   })
   @PutMapping("/{id}")
   public ResponseEntity<Void> updatePassword(@PathVariable String id, @Valid @RequestBody UserPasswordDTO entity) {
